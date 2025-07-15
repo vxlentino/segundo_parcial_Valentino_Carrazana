@@ -1,10 +1,19 @@
 import pygame
+from preguntas import crear_archivo_preguntas_si_no_existe
+from funciones import crear_archivo_partida_si_no_existe
+
+crear_archivo_partida_si_no_existe()
+crear_archivo_preguntas_si_no_existe()
+
+
 from variables import *
 from menu import *
 from juego import *
 from configuracion import *
 from ranking import *
 from fin_del_juego import *
+
+
 
 
 #configuraciones
@@ -48,4 +57,6 @@ while corriendo:
     #actualizo
     pygame.display.flip()
 
+# Detener la música al salir
+pygame.mixer.music.stop()
 pygame.quit()

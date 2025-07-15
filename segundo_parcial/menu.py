@@ -4,7 +4,7 @@ from funciones import *
 
 pygame.init()
 
-imagen = pygame.image.load("d:\GOOGLE\\fondo.jpg")
+imagen = pygame.image.load("C:\\Users\\valen\\OneDrive\\Escritorio\\segundo_parcial_Valentino_Carrazana\\segundo_parcial\\preguntados.jpg")
 imagen_fondo = pygame.transform.scale(imagen, (ANCHO, ALTO))
 fondo_rectangulo = imagen_fondo.get_rect()
 fondo_rectangulo.topleft = (0, 0)

@@ -4,79 +4,133 @@ import csv
 from datetime import datetime
 from variables import *
 from funciones import *
-from juego import *
 
-pygame.init()
 
-fuente = pygame.font.SysFont("Arial Narrow",40)
-cuadro = {}
-cuadro["superficie"] = pygame.Surface(CUADRO_TEXTO)
-cuadro["rectangulo"] = cuadro["superficie"].get_rect()
-cuadro['superficie'].fill(COLOR_AZUL)
-nombre = ""
-preguntas = cargar_preguntas("preguntas.csv")
+
+
+
+input_nombre = "" #la cadena donde se guarda el nombre que el usuario escribe
+input_rect = pygame.Rect(ANCHO // 2 - 150, ALTO // 2 + 100, 300, 50) #rectangulo para el campo de texto
+input_activo = True #el input box esta activo por defecto para que el usuario pueda empezar a escribir
+color_input_borde = COLOR_AZUL #color del borde cuando el input esta vacio
+color_input_fondo = COLOR_GRIS_CLARO #fondo del input box
+
+# Configuración del botón "Guardar y Volver"
+boton_guardar_rect = pygame.Rect(ANCHO // 2 - 150, ALTO - 150, 300, 60)
+
+#mensaje error cuando el usuario no ponga un nombre
+mensaje_error_nombre = False
+
 
 def mostrar_fin_juego(pantalla:pygame.Surface,cola_eventos:list[pygame.event.Event],datos_juego:dict) -> str:
-    global nombre
-    retorno = "terminado"
+    global input_nombre, input_activo, mensaje_error_nombre
 
+
+    retorno = "terminado"
     pantalla.fill(COLOR_BLANCO)
     
     for evento in cola_eventos:
         if evento.type == pygame.QUIT:
-            #Estaria bueno forzarle al usuario que no pueda salir del juego hasta que guarde la puntuacion -> A gusto de ustedes
-            if nombre.strip() != "":#bloqueo la salida hasta que ingrese el nombre
+            #estaria bueno forzarle al usuario que no pueda salir del juego hasta que guarde la puntuacion -> A gusto de ustedes
+            if input_nombre.strip() != "":#bloqueo la salida hasta que ingrese el nombre
                 retorno = "salir"
 
         elif evento.type == pygame.KEYDOWN:
-            bloc_mayus = pygame.key.get_mods() and pygame.KMOD_CAPS
-            letra_presionada = pygame.key.name(evento.key)
-            
-            if letra_presionada == "backspace" and len(nombre) > 0:
-                nombre = nombre[0:-1]#Elimino el ultimo
-                cuadro["superficie"].fill(COLOR_AZUL)
-            
-            if letra_presionada == "space":
-                nombre += " "
-            
-            elif len(letra_presionada) == 1 and letra_presionada.isalnum():
-                if bloc_mayus != 0:
-                    nombre += letra_presionada.upper()
+            if input_activo: # Solo procesa si el campo de texto está activo
+                if evento.key == pygame.K_BACKSPACE:
+                    input_nombre = input_nombre[:-1] # Eliminar el último carácter
+                    mensaje_error_nombre = False # Oculta el mensaje de error si el usuario empieza a escribir
+                elif evento.key == pygame.K_RETURN: # Si presiona ENTER
+                    if input_nombre.strip() != "": # Si hay un nombre válido
+                        datos_juego["nombre"] = input_nombre.strip() # Asignar el nombre
+                        guardar_puntaje(datos_juego) # Llamar a la función para guardar                        
+                        
+                        # Reiniciar para la próxima partida
+                        input_nombre = "" 
+                        datos_juego["puntuacion"] = 0
+                        datos_juego["vidas"] = CANTIDAD_VIDAS
+                        mensaje_error_nombre = False
+                        retorno = "menu" # Volver al menú
+                    else:
+                        mensaje_error_nombre = True # Mostrar mensaje si el nombre está vacío
                 else:
-                    nombre += letra_presionada.lower()
+                    # Limitar el largo del nombre para que no se salga del cuadro
+                    if len(input_nombre) < 20: 
+                        input_nombre += evento.unicode # Añadir el carácter presionado
 
         elif evento.type == pygame.MOUSEBUTTONDOWN:
-            if cuadro["rectangulo"].collidepoint(evento.pos):#si hace click en el cuadro de texto
-                if nombre.strip() != "":#si el nombre no esta vacio, lo guardo y vuelvo al menu
-
-                    # resultados_preguntas = datos_juego["resultados_preguntas"]
-                    # actualizar_estadisticas_preguntas(preguntas, resultados_preguntas)
-                    # guardar_estadisticas_preguntas("preguntas.csv", preguntas)
-
-                    #guardo en archivo JSON
-                    datos = {
-                        "nombre": nombre.strip(),#.strip() limpia los espacios no deseados
-                        "puntaje": datos_juego["puntuacion"],
-                        "fecha": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-                    }
-                    guardar_puntaje(datos)
-                    print("se guardo el puntaje")
-                    nombre = ""
+            print(f"  MOUSEBUTTONDOWN. Pos: {evento.pos}")
+            # Detectar clic en el campo de texto para activarlo/desactivarlo
+            if input_rect.collidepoint(evento.pos):
+                input_activo = not input_activo
+            else:
+                input_activo = False # Si clickea fuera, el input se desactiva
+            
+            # Detectar clic en el botón "Guardar y Volver"
+            if boton_guardar_rect.collidepoint(evento.pos):
+                if input_nombre.strip() != "": # Solo guardar si el nombre no está vacío
+                    datos_juego["nombre"] = input_nombre.strip() 
+                    guardar_puntaje(datos_juego) 
+                    print("Puntaje guardado por botón.")
+                    
+                    # Reiniciar variables para una nueva partida
+                    input_nombre = ""
                     datos_juego["puntuacion"] = 0
                     datos_juego["vidas"] = CANTIDAD_VIDAS
-                    retorno = "menu"
+                    mensaje_error_nombre = False # Oculta el mensaje de error
+
+                    retorno = "menu" # Cambia el estado a "menu"
+                else:
+                    mensaje_error_nombre = True # Muestra mensaje si el nombre está vacío al intentar guardar
 
 
-
-    #donde el usuario escribe el nombre
-    cuadro["rectangulo"] = pantalla.blit(cuadro["superficie"],(130,200))
-    mostrar_texto(cuadro["superficie"],nombre,(10,0),fuente,COLOR_BLANCO)
-    mostrar_texto(pantalla, "tiene que ingresar un nombre", (150, 250), fuente, COLOR_NEGRO)
-
-    #muestro el puntaje del usuario
-    mostrar_texto_simple(pantalla, "usted obtuvo:", (150, 150), fuente, COLOR_NEGRO)
-    mostrar_texto_simple(pantalla, str(datos_juego["puntuacion"]), (350,150), fuente, COLOR_NEGRO)
-
-    # mostrar_texto_simple(pantalla, f"aciertos: {pregunta_actual['cantidad_aciertos']}")
+    # --- Dibujar la pantalla de Fin de Juego ---
     
+    # Título "¡Juego Terminado!"
+    mostrar_texto(pantalla, "¡Juego Terminado!", 
+                  (ANCHO // 2 - FUENTE_TITULO.size("¡Juego Terminado!")[0] // 2, 50), 
+                  FUENTE_TITULO, COLOR_NEGRO)
+
+    # Mostrar puntaje final
+    mostrar_texto(pantalla, f"Puntuación final: {datos_juego['puntuacion']}", 
+                  (ANCHO // 2 - FUENTE_NORMAL.size(f"Puntuación final: {datos_juego['puntuacion']}")[0] // 2, 150), 
+                  FUENTE_NORMAL, COLOR_NEGRO)
+    
+    # Mensaje para ingresar el nombre
+    mostrar_texto(pantalla, "Ingresa tu nombre para el Ranking:", 
+                  (ANCHO // 2 - FUENTE_NORMAL.size("Ingresa tu nombre para el Ranking:")[0] // 2, ALTO // 2 + 30), 
+                  FUENTE_NORMAL, COLOR_NEGRO)
+
+    # Dibujar el campo de texto (input box)
+    pygame.draw.rect(pantalla, color_input_fondo, input_rect) # Fondo del input
+    # Borde del input, cambia de color si está activo
+    pygame.draw.rect(pantalla, color_input_borde if input_activo else COLOR_GRIS_OSCURO, input_rect, 3) 
+    
+    # Texto dentro del input box
+    superficie_texto_input = FUENTE_INPUT.render(input_nombre, True, COLOR_NEGRO)
+    # Ajustar la posición del texto para que esté un poco más hacia la izquierda del borde y centrado verticalmente
+    texto_rect = superficie_texto_input.get_rect(x=input_rect.x + 5, centery=input_rect.centery)
+    pantalla.blit(superficie_texto_input, texto_rect)
+
+    # Mostrar mensaje de error si el nombre está vacío y se intentó guardar
+    if mensaje_error_nombre:
+        mostrar_texto(pantalla, "¡Debes ingresar un nombre!", 
+                      (ANCHO // 2 - FUENTE_NORMAL.size("¡Debes ingresar un nombre!")[0] // 2, input_rect.bottom + 10), 
+                      FUENTE_NORMAL, COLOR_ROJO)
+
+    # Dibujar el botón "Guardar y Volver al Menú"
+    pygame.draw.rect(pantalla, COLOR_VERDE, boton_guardar_rect) # Fondo del botón
+    # Centrar el texto en el botón
+    mostrar_texto(pantalla, "Guardar y Volver", 
+                  (boton_guardar_rect.x + (boton_guardar_rect.width - FUENTE_BOTON.size("Guardar y Volver")[0]) // 2, 
+                   boton_guardar_rect.y + (boton_guardar_rect.height - FUENTE_BOTON.size("Guardar y Volver")[1]) // 2), 
+                  FUENTE_BOTON, COLOR_BLANCO)
+
+
+
+
     return retorno
+
+
+
+    

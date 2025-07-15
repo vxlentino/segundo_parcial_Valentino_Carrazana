@@ -11,6 +11,7 @@ COLOR_VIOLETA = (134,23,219)
 COLOR_PREGUNTADOS = (240,239,245,255)
 COLOR_AMARILLO = (251, 255, 0)
 COLOR_GRIS_OSCURO = (96,96,96)
+COLOR_GRIS_CLARO = (200, 200, 200)
 
 
 #RESOLUCION
@@ -41,7 +42,17 @@ TAMAÑO_BOTON_VOLVER = (100,40)
 
 #VIDAS Y PUNTOS
 CANTIDAD_VIDAS = 3
-PUNTUACION_ACIERTO = 100
-PUNTUACION_ERROR = 25
+PUNTUACION_ACIERTO = 10
+PUNTUACION_ERROR = 5
+
+
+#FUENTES DEL JUEGO
+FUENTE_TITULO = pygame.font.SysFont("Arial Narrow", 50)
+FUENTE_NORMAL = pygame.font.SysFont("Arial Narrow", 40)
+FUENTE_INPUT = pygame.font.SysFont("Arial Narrow", 35)
+FUENTE_BOTON = pygame.font.SysFont("Arial Narrow", 30)
+FUENTE_RESPUESTA = pygame.font.SysFont("Arial Narrow",23)
+FUENTE_TEXTO_COMUN = pygame.font.SysFont("Arial Narrow",25) 
+FUENTE_PREGUNTA = pygame.font.SysFont("Arial", 30) 
 
 

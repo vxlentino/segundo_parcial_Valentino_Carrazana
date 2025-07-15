@@ -63,20 +63,101 @@ import pygame
 #         x = posicion[0]
 #         y += alto_palabra + espaciado_lineas
 
-def mostrar_texto(pantalla, texto, posicion, fuente, color):
-    # Aquí usamos 'fuente.size()' para obtener el tamaño del texto correctamente
-    ancho_texto, alto_texto = fuente.size(texto)
-    superficie_texto = fuente.render(texto, True, color)
-    pantalla.blit(superficie_texto, posicion)
+
+def mostrar_texto(superficie: pygame.Surface, texto: str, posicion: tuple[int, int], fuente: pygame.font.Font, color: tuple[int,int,int], centrado: bool = False, ancho_max: int = None) -> None:
+    """
+    Muestra texto en una superficie de Pygame.
+
+    Args:
+        superficie_destino: La superficie donde se dibujará el texto.
+        texto: El string de texto a mostrar.
+        posicion: Una tupla (x, y) que representa la esquina superior izquierda del texto
+                  o el centro si 'centrado' es True.
+        fuente: El objeto de fuente de Pygame.
+        color: El color del texto (tupla RGB).
+        centrado: Si es True, 'posicion' se considera el centro del texto.
+                  Si es False (por defecto), 'posicion' es la esquina superior izquierda.
+    """
+    if ancho_max is None: # Si no hay ancho_max, se comporta como antes (una sola línea)
+        render = fuente.render(texto, True, color)
+        rect = render.get_rect()
+        if centrado:
+            rect.center = posicion
+        else:
+            rect.topleft = posicion
+        superficie.blit(render, rect)
+    else: # Si hay ancho_max, envolver el texto
+        palabras = texto.split(' ')
+        lineas = []
+        linea_actual = ""
+        espacio = fuente.size(" ")[0] # Ancho de un espacio
+
+        for palabra in palabras:
+            ancho_palabra, alto_palabra = fuente.size(palabra)
+            
+            # Si la palabra es más grande que el ancho_max, la cortamos
+            if ancho_palabra > ancho_max:
+                # Caso extremo: una palabra es demasiado larga. Intentar cortarla.
+                # Para simplificar, si una palabra es más larga que el ancho máximo, la trataremos como una línea.
+                # Un manejo más robusto podría cortar la palabra, pero para texto de preguntas,
+                # asumimos que las palabras individuales suelen caber.
+                if linea_actual: # Si hay algo en la línea actual, añadirla y empezar una nueva
+                    lineas.append(linea_actual)
+                linea_actual = palabra # Esta palabra será una línea por sí misma (y se cortará si excede el ancho_max)
+                lineas.append(linea_actual)
+                linea_actual = ""
+                continue
+
+
+            if fuente.size(linea_actual + palabra)[0] + espacio > ancho_max and linea_actual:
+                lineas.append(linea_actual)
+                linea_actual = palabra + " "
+            else:
+                linea_actual += palabra + " "
+        
+        if linea_actual:
+            lineas.append(linea_actual)
+        
+        y_offset = 0
+        for linea in lineas:
+            render = fuente.render(linea.strip(), True, color) # .strip() para quitar el espacio extra al final
+            rect = render.get_rect()
+            
+            # Ajustar la posición de cada línea
+            if centrado:
+                rect.centerx = posicion[0]
+                rect.top = posicion[1] + y_offset
+            else:
+                rect.topleft = (posicion[0], posicion[1] + y_offset)
+            
+            superficie.blit(render, rect)
+            y_offset += fuente.get_linesize() # Avanza para la siguiente línea
+
+
+
+
+
+
+# def mostrar_texto(pantalla, texto, posicion, fuente, color):
+#     # Aquí usamos 'fuente.size()' para obtener el tamaño del texto correctamente
+#     ancho_texto, alto_texto = fuente.size(texto)
+#     superficie_texto = fuente.render(texto, True, color)
+#     pantalla.blit(superficie_texto, posicion)
     
 
 def mostrar_texto_simple(surface, texto, posicion, fuente, color=pygame.Color('black')):
-    text_surface = fuente.render(texto, True, color)  # Renderizar el texto.
-    surface.blit(text_surface, posicion)
+    texto_renderizado = fuente.render(texto, True, color)  # Renderizar el texto.
+    surface.blit(texto_renderizado, posicion)
+
+
+
 
 def mezclar_lista(lista_preguntas:list) -> None:
     random.shuffle(lista_preguntas)
-    
+
+
+
+
 def verificar_respuesta(datos_juego:dict,pregunta_actual:dict,respuesta:int) -> bool:
     if respuesta == pregunta_actual["respuesta_correcta"]:
         datos_juego["puntuacion"] += PUNTUACION_ACIERTO
@@ -96,9 +177,12 @@ def verificar_respuesta(datos_juego:dict,pregunta_actual:dict,respuesta:int) -> 
     
 
 
+
+
 def reiniciar_estadisticas(datos_juego:dict):
     datos_juego["puntuacion"] = 0
     datos_juego["vidas"] = CANTIDAD_VIDAS
+
 
 
 
@@ -106,6 +190,7 @@ def cargar_preguntas(nombre_archivo):
     with open(nombre_archivo, mode="r", encoding="utf-8") as archivo_csv:
         lector = csv.DictReader(archivo_csv)
         return list(lector)
+
 
 
 
@@ -121,13 +206,27 @@ def guardar_puntaje(datos):
     #agrego el nuevo puntaje
     historial.append({
         "nombre": datos["nombre"],
-        "puntaje": datos["puntaje"],
+        "puntaje": datos["puntuacion"],
         "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
     
     #guardo elm historial con las actualizaciones
     with open("partidas.json", "w") as archivo:
         json.dump(historial, archivo, indent=4)
+
+
+
+
+
+def crear_archivo_partida_si_no_existe():
+    path_partidas = "partidas.json"
+    if not os.path.exists(path_partidas):
+        try:
+            with open(path_partidas, "w", encoding="utf-8") as archivo:
+                json.dump([], archivo, indent=4) # creo un JSON valido con una lista vacia
+            print(f"Archivo '{path_partidas}' creado exitosamente.")
+        except IOError as e:
+            print(f"Error al crear el archivo '{path_partidas}': {e}")
 
 
 
@@ -159,10 +258,16 @@ def cargar_top_10(path:str) -> list:
 
     return top_10
 
+
+
+
 def comodin_X2(puntaje):
     puntos = puntaje * 2
 
     return puntos
+
+
+
 
 def comodin_doble_chance(pregunta, respuesta_dada, puntaje):
     segunda_oportunidad = False
@@ -170,6 +275,7 @@ def comodin_doble_chance(pregunta, respuesta_dada, puntaje):
         segunda_oportunidad = True
 
     return segunda_oportunidad
+
 
 
 def manejar_tiempo_general(tiempo_inicio, limite_tiempo, datos_juego):
@@ -183,6 +289,8 @@ def manejar_tiempo_general(tiempo_inicio, limite_tiempo, datos_juego):
         tiempo_agotado = True  #el tiempo se agoto
     
     return tiempo_agotado
+
+
 
 def mostrar_tiempo(pantalla, tiempo_restante):
     fuente_tiempo = pygame.font.SysFont("Arial Narrow", 30)
