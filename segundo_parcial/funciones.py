@@ -10,17 +10,17 @@ import pygame
 
 def mostrar_texto(superficie: pygame.Surface, texto: str, posicion: tuple[int, int], fuente: pygame.font.Font, color: tuple[int,int,int], centrado: bool = False, ancho_max: int = None) -> None:
     """
-    Muestra texto en una superficie de Pygame.
+    muestra texto en una superficie de Pygame
 
     Args:
-        superficie_destino:la superficie donde se dibujará el texto.
-        texto:el string de texto a mostrar.
+        superficie_destino:la superficie donde se dibujará el texto
+        texto:el string de texto a mostrarm
         posicion:una tupla (x, y) que representa la esquina superior izquierda del texto
-                  o el centro si 'centrado' es True.
-        fuente:el objeto de fuente de Pygame.
-        color:el color del texto (tupla RGB).
-        centrado:si es True, 'posicion' se considera el centro del texto.
-                  si es False (por defecto), 'posicion' es la esquina superior izquierda.
+                  o el centro si 'centrado' es True
+        fuente:el objeto de fuente de Pygame
+        color:el color del texto (tupla RGB)
+        centrado:si es True, 'posicion' se considera el centro del texto
+                  si es False (por defecto), 'posicion' es la esquina superior izquierda
     """
     if ancho_max is None: #si no hay ancho_max, se comporta como antes (una sola línea)
         render = fuente.render(texto, True, color)
@@ -99,9 +99,6 @@ def verificar_respuesta(datos_juego:dict,pregunta_actual:dict,respuesta:int) -> 
         #SIN PUNTOS NEGATIVOS
         if datos_juego["puntuacion"] > PUNTUACION_ERROR:
             datos_juego["puntuacion"] -= PUNTUACION_ERROR
-            
-        #CON PUNTOS NEGATIVOS
-        #datos_juego["puntuacion"] -= PUNTUACION_ERROR
         
         datos_juego["vidas"] -= 1
         retorno = False
@@ -130,7 +127,7 @@ def cargar_preguntas(nombre_archivo):
 def guardar_puntaje(datos):
     if not os.path.exists("partidas.json"):
         with open("partidas.json", "w") as archivo:
-            archivo.write("[]")  # Crear un JSON vacío como lista.
+            archivo.write("[]")  #crear un JSON vacío como lista
 
     #leo el historial del archivo        
     with open("partidas.json", "r") as archivo:
@@ -156,7 +153,7 @@ def crear_archivo_partida_si_no_existe():
     if not os.path.exists(path_partidas):
         try:
             with open(path_partidas, "w", encoding="utf-8") as archivo:
-                json.dump([], archivo, indent=4) # creo un JSON valido con una lista vacia
+                json.dump([], archivo, indent=4) #creo un JSON valido con una lista vacia
             print(f"Archivo '{path_partidas}' creado exitosamente.")
         except IOError as e:
             print(f"Error al crear el archivo '{path_partidas}': {e}")
