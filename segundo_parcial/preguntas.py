@@ -41,19 +41,3 @@ def crear_archivo_preguntas_si_no_existe():
             escritor.writeheader()
             escritor.writerows(lista_preguntas)
         print(f"Archivo '{nombre_archivo}' creado con éxito.")
-
-
-
-
-
-
-
-
-
-# # Escribir en el archivo CSV
-# with open(nombre_archivo, mode="w", newline="", encoding="utf-8") as archivo_csv:
-#     escritor = csv.DictWriter(archivo_csv, fieldnames=["pregunta", "respuesta_1", "respuesta_2", "respuesta_3", "respuesta_correcta"])
-#     escritor.writeheader()  # Escribe la fila de encabezados
-#     escritor.writerows(lista_preguntas)  # Escribe todas las preguntas
-
-# print(f"Archivo '{nombre_archivo}' creado con éxito.")

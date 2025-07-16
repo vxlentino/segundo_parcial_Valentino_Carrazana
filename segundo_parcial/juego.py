@@ -341,9 +341,9 @@ def mostrar_juego(pantalla:pygame.Surface,cola_eventos:list[pygame.event.Event],
 
     #dibuja los comodines
     for i, boton_surf in enumerate(lista_comodines_superficies):
-        # Primero, rellenar el fondo del botón
+        #primero, rellenar el fondo del botón
         color_fondo_comodin = COLOR_ROJO if i == 0 else (COLOR_VERDE if i == 1 else (COLOR_AZUL if i == 2 else COLOR_AMARILLO))
-        # Si el comodín está usado, cambiar el color de fondo a uno más oscuro
+        #si el comodín está usado, cambiar el color de fondo a uno más oscuro
         if (i == 0 and not comodines_disponibles_actual["bomba"]) or \
            (i == 1 and not comodines_disponibles_actual["x2"]) or \
            (i == 2 and not comodines_disponibles_actual["doble_chance"]) or \
@@ -353,7 +353,7 @@ def mostrar_juego(pantalla:pygame.Surface,cola_eventos:list[pygame.event.Event],
         
         boton_surf.fill(color_fondo_comodin) # Rellena la superficie del botón
 
-        # Luego, dibujar el texto sobre la superficie del botón (no directamente en la pantalla)
+        #luego, dibujar el texto sobre la superficie del botón (no directamente en la pantalla)
         texto_comodin = ""
         if i == 0: texto_comodin = "BOMBA"
         elif i == 1: texto_comodin = "X2"
@@ -364,7 +364,7 @@ def mostrar_juego(pantalla:pygame.Surface,cola_eventos:list[pygame.event.Event],
                       (boton_surf.get_width() // 2, boton_surf.get_height() // 2), # Centrado
                       FUENTE_TEXTO_COMUN, COLOR_BLANCO, centrado=True) # Pasamos centrado=True
         
-        # Finalmente, blitear el botón_surf (con su fondo y texto) a la pantalla
+        #finalmente, blitear el botón_surf (con su fondo y texto) a la pantalla
         pantalla.blit(boton_surf, lista_rectangulos_comodines[i])
 
 

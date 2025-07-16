@@ -42,12 +42,6 @@ def mostrar_menu(pantalla:pygame.Surface,cola_eventos:list[pygame.event.Event])-
             retorno = "salir"
 
 
-    # lista_botones[0]["rectangulo"] = pygame.rect(125,115, ANCHO_BOTON, ALTO_BOTON)
-    # lista_botones[1]["rectangulo"] = pygame.rect(125,195, ANCHO_BOTON, ALTO_BOTON)
-    # lista_botones[2]["rectangulo"] = pygame.rect(125,275, ANCHO_BOTON, ALTO_BOTON)
-    # lista_botones[3]["rectangulo"] = pygame.rect(125,355, ANCHO_BOTON, ALTO_BOTON)
-
-
     pos_x = (ANCHO - ANCHO_BOTON) // 2
    
     lista_botones[0]["rectangulo"] = pantalla.blit(lista_botones[0]["superficie"],(pos_x,115))
