@@ -36,13 +36,13 @@ TAMAÑO_BOTON = (ANCHO_BOTON, ALTO_BOTON)
 CUADRO_TEXTO = (250,50)
 TAMAÑO_BOTON_VOLUMEN = (100,100)
 TAMAÑO_BOTON_VOLVER = (100,40)
-# CLICK_SONIDO = pygame.mixer.Sound("d:\GOOGLE\click.mp3")
-# ERROR_SONIDO = pygame.mixer.Sound("d:\GOOGLE\error.mp3")
-# MUSICA = pygame.mixer.music.load("d:\GOOGLE\Undertale - Megalovania _ HQ [kBoFfB9fQZQ].mp3")
+CLICK_SONIDO = pygame.mixer.Sound("C:\\Users\\valen\\OneDrive\\Escritorio\\segundo_parcial_Valentino_Carrazana\\segundo_parcial\\videoplayback (1).wav")
+ERROR_SONIDO = pygame.mixer.Sound("C:\\Users\\valen\\OneDrive\\Escritorio\\segundo_parcial_Valentino_Carrazana\\segundo_parcial\error-126627 (1).wav")
+MUSICA = pygame.mixer.music.load("C:\\Users\\valen\\OneDrive\\Escritorio\\segundo_parcial_Valentino_Carrazana\\segundo_parcial\\Undertale - Megalovania _ HQ (1).wav")
 
 #VIDAS Y PUNTOS
 CANTIDAD_VIDAS = 3
-PUNTUACION_ACIERTO = 10
+PUNTUACION_ACIERTO = 5
 PUNTUACION_ERROR = 5
 
 
@@ -54,5 +54,4 @@ FUENTE_BOTON = pygame.font.SysFont("Arial Narrow", 30)
 FUENTE_RESPUESTA = pygame.font.SysFont("Arial Narrow",23)
 FUENTE_TEXTO_COMUN = pygame.font.SysFont("Arial Narrow",25) 
 FUENTE_PREGUNTA = pygame.font.SysFont("Arial", 30) 
-
 

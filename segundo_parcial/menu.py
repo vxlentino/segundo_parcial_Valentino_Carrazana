@@ -4,11 +4,6 @@ from funciones import *
 
 pygame.init()
 
-imagen = pygame.image.load("C:\\Users\\valen\\OneDrive\\Escritorio\\segundo_parcial_Valentino_Carrazana\\segundo_parcial\\preguntados.jpg")
-imagen_fondo = pygame.transform.scale(imagen, (ANCHO, ALTO))
-fondo_rectangulo = imagen_fondo.get_rect()
-fondo_rectangulo.topleft = (0, 0)
-
 
 pantalla = pygame.display.set_mode(VENTANA)
 
@@ -18,12 +13,13 @@ lista_botones = []
 for i in range(4):
     boton = {}
     boton['superficie'] = pygame.Surface(TAMAÑO_BOTON)
-    boton['superficie'].fill(COLOR_BLANCO)
+    boton['superficie'].fill(COLOR_ROJO)
     boton['rectangulo'] = boton['superficie'].get_rect()
     lista_botones.append(boton)
     
 
 def mostrar_menu(pantalla:pygame.Surface,cola_eventos:list[pygame.event.Event])-> str:
+
     pantalla.fill(COLOR_BLANCO)
     #Gestionar eventos:
     retorno = "menu"
@@ -53,10 +49,7 @@ def mostrar_menu(pantalla:pygame.Surface,cola_eventos:list[pygame.event.Event])-
 
 
     pos_x = (ANCHO - ANCHO_BOTON) // 2
-
-    # espacio_vertical = 80
-    pantalla.blit(imagen_fondo, fondo_rectangulo)
-    
+   
     lista_botones[0]["rectangulo"] = pantalla.blit(lista_botones[0]["superficie"],(pos_x,115))
     lista_botones[1]["rectangulo"] = pantalla.blit(lista_botones[1]["superficie"],(pos_x,195))
     lista_botones[2]["rectangulo"] = pantalla.blit(lista_botones[2]["superficie"],(pos_x,275))
@@ -66,7 +59,6 @@ def mostrar_menu(pantalla:pygame.Surface,cola_eventos:list[pygame.event.Event])-
     mostrar_texto(pantalla, "CONFIGURACION", ( pos_x,208), fuente_menu, COLOR_NEGRO)
     mostrar_texto(pantalla, "PUNTUACION", ( pos_x,295), fuente_menu, COLOR_NEGRO)
     mostrar_texto(pantalla, "SALIR", ( pos_x,370), fuente_menu, COLOR_NEGRO)
-
 
 
     return retorno

@@ -4,9 +4,9 @@ from variables import *
 from funciones import *
 
 
-# pygame.mixer.music.load("d:\GOOGLE\Undertale - Megalovania _ HQ [kBoFfB9fQZQ].mp3")  # Ruta del archivo
-# pygame.mixer.music.set_volume(0.5)  # Ajusta el volumen (0.0 a 1.0)
-# pygame.mixer.music.play(-1)  # -1 para reproducir en bucle infinito
+pygame.mixer.music.load("C:\\Users\\valen\\OneDrive\\Escritorio\\segundo_parcial_Valentino_Carrazana\\segundo_parcial\\Undertale - Megalovania _ HQ (1).wav")  # Ruta del archivo
+pygame.mixer.music.set_volume(0.5)  # Ajusta el volumen (0.0 a 1.0)
+pygame.mixer.music.play(-1)  # -1 para reproducir en bucle infinito
 
 
 
@@ -265,11 +265,6 @@ def mostrar_juego(pantalla:pygame.Surface,cola_eventos:list[pygame.event.Event],
                             mostrar_texto(boton_bomba, "BOMBA", (boton_bomba.get_width() // 2, boton_bomba.get_height() // 2), FUENTE_TEXTO_COMUN, COLOR_BLANCO, centrado=True)
                             pantalla.blit(boton_bomba, lista_rectangulos_comodines[i])
                             pygame.display.update(lista_rectangulos_comodines[i])
-
-                            # pygame.draw.rect(pantalla, COLOR_GRIS_OSCURO, lista_rectangulos_comodines[i]) # Pinta el botón de gris
-                            # mostrar_texto(lista_comodines_superficies[i], "BOMBA", (lista_comodines_superficies[i].get_width() // 2, lista_comodines_superficies[i].get_height() // 2), FUENTE_TEXTO_COMUN, COLOR_BLANCO, centrado=True)
-                            # pantalla.blit(lista_comodines_superficies[i], lista_rectangulos_comodines[i])
-                            # pygame.display.update(lista_rectangulos_comodines[i])   
 
        
                         elif i == 1 and comodines_disponibles_actual["x2"] and not bandera_respuesta:

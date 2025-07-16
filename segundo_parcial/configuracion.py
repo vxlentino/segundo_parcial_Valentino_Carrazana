@@ -35,16 +35,16 @@ def mostrar_configuracion(pantalla:pygame.Surface,cola_eventos:list[pygame.event
                 if datos_juego["volumen_musica"] < 100:
                     datos_juego["volumen_musica"] += 5
                     pygame.mixer.music.set_volume(datos_juego["volumen_musica"] / 100)#acutaliza el volumen
-                # CLICK_SONIDO.play()
+                CLICK_SONIDO.play()
             elif boton_resta["rectangulo"].collidepoint(evento.pos):
                 print("RESTA VOLUMEN")
                 if datos_juego["volumen_musica"] > 0:
                     datos_juego["volumen_musica"] -= 5
                     pygame.mixer.music.set_volume(datos_juego["volumen_musica"] / 100)#acutaliza el volumen
-                # CLICK_SONIDO.play()
+                CLICK_SONIDO.play()
             elif boton_volver["rectangulo"].collidepoint(evento.pos):
                 print("VOLVER AL MENU")
-                # CLICK_SONIDO.play()
+                CLICK_SONIDO.play()
                 retorno = "menu"
 
     #dibujar fondo          

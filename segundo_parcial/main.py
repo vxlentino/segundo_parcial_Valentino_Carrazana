@@ -14,8 +14,6 @@ from ranking import *
 from fin_del_juego import *
 
 
-
-
 #configuraciones
 pygame.init()
 pygame.mixer.init()
@@ -30,6 +28,7 @@ musica_bandera = False
 comodines_usados = {"bomba": False, "x2": False, "doble_chance": False, "pasar": False}
 puntaje = 0
 
+
 #arranco en juego
 while corriendo:
     tiempo.tick(FPS)
@@ -38,8 +37,9 @@ while corriendo:
     if primer_ventana == "menu":
         primer_ventana = mostrar_menu(pantalla,eventos)
     elif primer_ventana == "juego":
-        if musica_bandera == False:
-            porcentaje_vol = datos_juego["volumen_musica"] / 100
+        if not musica_bandera:
+            pygame.mixer.music.set_volume(datos_juego["volumen_musica"] / 100)
+            pygame.mixer.music.play(-1)
             musica_bandera = True
         primer_ventana = mostrar_juego(pantalla, eventos, datos_juego, comodines_usados, puntaje)
     elif primer_ventana == "configuraciones":
@@ -52,7 +52,7 @@ while corriendo:
             musica_bandera = False            
         primer_ventana = mostrar_fin_juego(pantalla, eventos, datos_juego)
     elif primer_ventana == "salir":
-        corriendo = False
+        corriendo = False    
 
     #actualizo
     pygame.display.flip()
